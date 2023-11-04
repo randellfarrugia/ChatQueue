@@ -29,6 +29,7 @@ namespace ChatApplication.Tests.ChatManagerTests
             Assert.Single(chatManager.Object.agents);
             Assert.Single(chatManager.Object.chatQueue);
             Assert.NotNull(chatManager.Object.chatQueue[0].AgentID);
+            Assert.Equal(chatManager.Object.chatQueue[0].AgentID, chatManager.Object.agents[0].Id);
         }
 
         [Fact]
