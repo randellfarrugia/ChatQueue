@@ -28,6 +28,21 @@ namespace ChatApplication.Utilities
             return agents;
         }
 
+        public static List<Agent> AddOverflowTeamMember(List<Agent> overflowTeam, string name)
+        {
+            var agent = new Agent
+            {
+                Id = new Guid().ToString(),
+                Name = name,
+                SeniorityLevel = "Junior",
+                Capacity = CalculateAgentCapacity("Junior"),
+                CurrentChats = 0
+            };
+
+            overflowTeam.Add(agent);
+            return overflowTeam;
+        }
+
         private static int CalculateAgentCapacity(string seniority)
         {
             int capacity = 0;
@@ -49,21 +64,6 @@ namespace ChatApplication.Utilities
             }
 
             return capacity;
-        }
-
-        public static List<Agent> AddOverflowTeamMember(List<Agent> overflowTeam, string name)
-        {
-            var agent = new Agent
-            {
-                Id = new Guid().ToString(),
-                Name = name,
-                SeniorityLevel = "Junior",
-                Capacity = MaxConcurrentChats,
-                CurrentChats = 0
-            };
-
-            overflowTeam.Add(agent);
-            return overflowTeam;
         }
 
     }
