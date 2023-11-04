@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using Newtonsoft.Json;
-using QueueAPI.Controllers;
-using Serilog;
-using ILogger = Serilog.ILogger;
-using Microsoft.Extensions.Hosting;
+﻿using ILogger = Serilog.ILogger;
 using ChatApplication.BusinessLogic;
 using ChatApplication.Models;
 
@@ -14,12 +8,12 @@ namespace QueueAPI.BusinessLogic
     public class PopulateTeamsBL : IQueueBL
     {
         public ILogger log;
-        public ChatSystem chatHandler;
+        public ChatManager chatHandler;
 
-        public PopulateTeamsBL(IConfiguration configuration, ILogger _logger, ChatSystem chatSystem)
+        public PopulateTeamsBL(IConfiguration configuration, ILogger _logger, ChatManager chatManager)
         {
             log = _logger;
-            chatHandler = chatSystem;
+            chatHandler = chatManager;
         }
 
         public void PopulateTeamA()
@@ -45,7 +39,7 @@ namespace QueueAPI.BusinessLogic
         {
             for (int i = 0; i < 6; i++)
             {
-                chatHandler.AddOverFlowAgent(new Agent());
+                chatHandler.AddOverflowAgent(new Agent());
             }            
         }
 

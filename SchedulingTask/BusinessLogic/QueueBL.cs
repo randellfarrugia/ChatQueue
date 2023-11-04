@@ -1,23 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using Newtonsoft.Json;
-using QueueAPI.Controllers;
-using Serilog;
 using ILogger = Serilog.ILogger;
-using Microsoft.Extensions.Hosting;
 using ChatApplication.BusinessLogic;
 using ChatApplication.Models;
-using System.Threading;
 
 
 namespace QueueAPI.BusinessLogic
 {
-    public class QueueBL : IQueueBL
+    public class QueueBL
     {
         public ILogger log;
-        public ChatSystem chatHandler;
+        public ChatManager chatHandler;
 
-        public QueueBL(IConfiguration configuration, ILogger _logger, ChatSystem chatSystem)
+        public QueueBL(IConfiguration configuration, ILogger _logger, ChatManager chatSystem)
         {
             log = _logger;
             chatHandler = chatSystem;
@@ -26,7 +21,7 @@ namespace QueueAPI.BusinessLogic
         public IActionResult InsertNewSession(QueueRequest request)
         {
             log.Information($"Request : {JsonConvert.SerializeObject(request)}");
-            string result = chatHandler.InsertNewSession(request.UserId);
+            string result = chatHandler.CreateNewSession(request.UserId);
 
             if (result == "NOTOK")
             {
@@ -49,8 +44,8 @@ namespace QueueAPI.BusinessLogic
         {
             while (true)
             {
-                Thread.Sleep(1000);
-                chatHandler.UpdatePollStatus(userId);
+                Thread.Sleep(10000);
+                chatHandler.ResetPollStatus(userId);
             }
 
         }

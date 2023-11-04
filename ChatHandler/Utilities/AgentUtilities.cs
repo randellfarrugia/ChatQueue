@@ -1,17 +1,10 @@
 ﻿using ChatApplication.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatApplication.Utilities
 {
     public static class AgentUtilities
     {
-        private const int MaxConcurrentChats = 10;
-        private const int OverflowTeamCapacity = 6;
-        private const double MaxQueueMultiplier = 1.5;
+        public const int MaxConcurrentChats = 10;
 
         public static List<Agent> AddAgent(List<Agent> agents, string name, string seniority)
         {
@@ -43,7 +36,7 @@ namespace ChatApplication.Utilities
             return overflowTeam;
         }
 
-        private static int CalculateAgentCapacity(string seniority)
+        public static int CalculateAgentCapacity(string seniority)
         {
             int capacity = 0;
 

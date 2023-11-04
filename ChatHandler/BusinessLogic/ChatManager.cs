@@ -1,47 +1,40 @@
 ﻿using ChatApplication.Models;
 using ChatApplication.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace ChatApplication.BusinessLogic
 {
-    public class ChatSystem
+    public class ChatManager : IChatManager
     {
         private const int MaxConcurrentChats = 10;
-        private const int OverflowTeamCapacity = 6;
         private const double MaxQueueMultiplier = 1.5;
 
-        private List<ChatSession> chatQueue;
-        private List<Agent> agents;
-        private List<Agent> overflowTeam;
+        public List<ChatSession> chatQueue;
+        public List<Agent> agents;
+        public List<Agent> overflowTeam;
 
-        public ChatSystem()
+        public ChatManager()
         {
             chatQueue = new List<ChatSession>();
             agents = new List<Agent>();
             overflowTeam = new List<Agent>();
         }
 
-        public string InsertNewSession(string userId)
+        public string CreateNewSession(string userId)
         {
-            Guid guid = Guid.NewGuid();
+            Guid sessionId = Guid.NewGuid();
             var session = new ChatSession
             {
-                SessionId = guid.ToString(),
+                SessionId = sessionId.ToString(),
                 UserId = userId,
                 StartTime = DateTime.Now,
                 IsActive = true,
                 PollCount = 0
             };
 
-            var maxQueueLength = GetMaxQueueLength();
-            var chatQueueCount = chatQueue?.Where(x => x.IsActive == true).ToList().Count;
+            var maxQueueLength = CalculateMaxQueueLength();
+            var activeChatCount = chatQueue?.Count(x => x.IsActive);
 
-            if (chatQueueCount < maxQueueLength)
+            if (activeChatCount < maxQueueLength)
             {
                 chatQueue.Add(session);
                 return AssignChatToAgent(session);
@@ -50,12 +43,11 @@ namespace ChatApplication.BusinessLogic
             {
                 return "NOTOK";
             }
-
         }
 
         public void StartChat(string userId)
         {
-            var session = chatQueue.Where(x => x.UserId == userId).FirstOrDefault();
+            var session = chatQueue.FirstOrDefault(x => x.UserId == userId);
             MonitorChatSession(session);
         }
 
@@ -64,12 +56,12 @@ namespace ChatApplication.BusinessLogic
             agents = AgentUtilities.AddAgent(agents, agent.Name, agent.SeniorityLevel);
         }
 
-        public void AddOverFlowAgent(Agent agent)
+        public void AddOverflowAgent(Agent agent)
         {
             overflowTeam = AgentUtilities.AddOverflowTeamMember(overflowTeam, agent.Name);
         }
 
-        public void UpdatePollStatus(string userId)
+        public void ResetPollStatus(string userId)
         {
             chatQueue.Where(x => x.UserId == userId).ToList().ForEach(y => y.PollCount = 0);
         }
@@ -84,26 +76,30 @@ namespace ChatApplication.BusinessLogic
             poll.Start(session.SessionId);
         }
 
-
-
-        private void PollChatSession(string sessionId)
+        private void PollChatSession(object sessionId)
         {
             var stopCheck = false;
             while (!stopCheck)
             {
                 Thread.Sleep(4000);
-                var pollCount = chatQueue?.Where(x => x.SessionId == sessionId).FirstOrDefault().PollCount;
-                pollCount++;
-
-                if (pollCount >= 3)
+                var session = chatQueue?.FirstOrDefault(x => x.SessionId == (string)sessionId);
+                if (session != null)
                 {
-                    chatQueue?.Where(x => x.SessionId == sessionId).ToList().ForEach(y => y.IsActive = false);
-                    stopCheck = true;
-                    agents.Where(a => a.Id == chatQueue?.Where(x => x.SessionId == sessionId).ToList()[0].AgentID).ToList().ForEach(x => x.CurrentChats--);
+                    session.PollCount++;
+                    if (session.PollCount >= 3)
+                    {
+                        session.IsActive = false;
+                        stopCheck = true;
+                        var agentId = chatQueue.FirstOrDefault(x => x.SessionId == session.SessionId)?.AgentID;
+                        if (agentId != null)
+                        {
+                            agents.Where(a => a.Id == agentId).ToList().ForEach(x => x.CurrentChats--);
+                        }
+                    }
                 }
                 else
                 {
-                    chatQueue?.Where(x => x.SessionId == sessionId).ToList().ForEach(y => y.PollCount = pollCount);
+                    stopCheck = true;
                 }
             }
         }
@@ -154,10 +150,10 @@ namespace ChatApplication.BusinessLogic
             return null;
         }
 
-        public int GetMaxQueueLength()
+        public int CalculateMaxQueueLength()
         {
-            int capacity = agents.Sum(a => a.Capacity);
-            int maxQueueLength = (int)(capacity * MaxQueueMultiplier);
+            int totalCapacity = agents.Sum(a => a.Capacity);
+            int maxQueueLength = (int)(totalCapacity * MaxQueueMultiplier);
             return maxQueueLength;
         }
     }

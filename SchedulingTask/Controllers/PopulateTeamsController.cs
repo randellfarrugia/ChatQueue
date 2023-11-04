@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Serilog.Core;
-using Serilog;
 using ILogger = Serilog.ILogger;
 using QueueAPI.BusinessLogic;
-using ChatApplication.Models;
 using ChatApplication.BusinessLogic;
 
 namespace QueueAPI.Controllers
@@ -16,7 +13,7 @@ namespace QueueAPI.Controllers
         public ILogger log;
         IConfiguration configuration;
 
-        public PopulateTeamsController(IConfiguration _configuration, IHttpContextAccessor _context, ILogger _logger, ChatSystem chatSystem)
+        public PopulateTeamsController(IConfiguration _configuration, ILogger _logger, ChatManager chatSystem)
         {
             PopulateTeamsBL = new PopulateTeamsBL(_configuration, _logger, chatSystem);
             configuration = _configuration;

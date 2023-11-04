@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueueAPI", "QueueAPI.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApplication", "..\ChatHandler\ChatApplication.csproj", "{F6E65DEB-BEC8-4C34-811C-8108CB62E65D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApplication.Tests", "..\ChatApplication.Tests\ChatApplication.Tests.csproj", "{378D3030-554B-4CA7-AC9F-C61BAE821E6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F6E65DEB-BEC8-4C34-811C-8108CB62E65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6E65DEB-BEC8-4C34-811C-8108CB62E65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6E65DEB-BEC8-4C34-811C-8108CB62E65D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378D3030-554B-4CA7-AC9F-C61BAE821E6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378D3030-554B-4CA7-AC9F-C61BAE821E6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378D3030-554B-4CA7-AC9F-C61BAE821E6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378D3030-554B-4CA7-AC9F-C61BAE821E6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
