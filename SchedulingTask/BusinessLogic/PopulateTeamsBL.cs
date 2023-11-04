@@ -5,7 +5,7 @@ using ChatApplication.Models;
 
 namespace QueueAPI.BusinessLogic
 {
-    public class PopulateTeamsBL : IQueueBL
+    public class PopulateTeamsBL
     {
         public ILogger log;
         public ChatManager chatHandler;
