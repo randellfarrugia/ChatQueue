@@ -18,12 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChatHandler\ChatApplication.csproj" />
+    <Folder Include="Models\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Utilities\" />
+    <ProjectReference Include="..\ChatApplication\ChatApplication.csproj" />
   </ItemGroup>
 
 </Project>
