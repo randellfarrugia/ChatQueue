@@ -19,16 +19,16 @@ If the client's poll count reaches 3 this means that the client hasn't updated h
 
 The client poll function will keep polling until a CancellationRequest token is received in the HttpContext, you can test this by sending a request with Postman and clicking cancel after a while. This will stop the request and in turn will stop the client polling.
 
-'''
+```
 https://localhost:7278/api/queue/createQueueSession
-'''
+```
 
-'''
+```
 {
   "UserId": "100",
   "Name": "John Doe",
   "Email": "john@testing.com"
 }
-'''
+```
 
 Once the poll count reaches a count of 3, the chat session will be marked as inactive and the Agent will be unassigned this chat.
