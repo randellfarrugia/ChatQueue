@@ -31,8 +31,7 @@ namespace QueueAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Serilog.ILogger>(log);
-            services.AddSingleton(new ChatManager());
-
+            services.AddSingleton<IChatManager, ChatManager>();
 
             services.AddControllers()
             .AddJsonOptions(options =>

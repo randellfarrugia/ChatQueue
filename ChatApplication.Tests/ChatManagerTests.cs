@@ -95,6 +95,40 @@ namespace ChatApplication.Tests.ChatManagerTests
         }
 
         [Fact]
+        public void AssignChatToAgent_AssignsChatToAvailableAgent_JuniorAgentAtFullCapacity()
+        {
+            // Arrange
+            var chatManager = new Mock<ChatManager>();
+            var userId = "user123";
+            var juniorAgent = new Agent { Name = "TestAgentJunior", SeniorityLevel = "Junior"};
+            var midLevelAgent = new Agent { Name = "TestAgentMidLevel", SeniorityLevel = "MidLevel" };
+
+            chatManager.Object.AddAgent(juniorAgent);
+            chatManager.Object.AddAgent(midLevelAgent);
+
+            chatManager.Object.agents.Where(a => a.Name == "TestAgentJunior").ToList().ForEach(x => x.CurrentChats = 5);
+            var session = new ChatSession
+            {
+                SessionId = "12313-123123-13123123",
+                UserId = userId,
+                StartTime = DateTime.Now,
+                IsActive = true,
+                PollCount = 0
+            };
+
+            chatManager.Object.chatQueue.Add(session);
+
+            // Act
+            var result = chatManager.Object.AssignChatToAgent(chatManager.Object.chatQueue.First());
+
+            // Assert
+            Assert.Equal("OK", result);
+            var chatSession = chatManager.Object.chatQueue.First();
+            Assert.Equal(chatSession.AgentID, chatManager.Object.agents.Where(a => a.Name == "TestAgentMidLevel").FirstOrDefault().Id);
+            Assert.Equal(1, chatManager.Object.agents.Where(a => a.Id == chatSession.AgentID).FirstOrDefault().CurrentChats);
+        }
+
+        [Fact]
         public void AssignChatToAgent_ReturnsNOTOK_WhenNoAvailableAgents()
         {
             // Arrange

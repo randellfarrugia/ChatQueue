@@ -12,10 +12,10 @@ namespace QueueAPI.BusinessLogic
         public ILogger log;
         public ChatManager chatHandler;
 
-        public QueueBL(IConfiguration configuration, ILogger _logger, ChatManager chatSystem)
+        public QueueBL(IConfiguration configuration, ILogger _logger, IChatManager chatManager)
         {
             log = _logger;
-            chatHandler = chatSystem;
+            chatHandler = (ChatManager?)chatManager;
         }
 
         public IActionResult InsertNewSession(QueueRequest request)

@@ -10,10 +10,10 @@ namespace QueueAPI.BusinessLogic
         public ILogger log;
         public ChatManager chatHandler;
 
-        public PopulateTeamsBL(IConfiguration configuration, ILogger _logger, ChatManager chatManager)
+        public PopulateTeamsBL(IConfiguration configuration, ILogger _logger, IChatManager chatManager)
         {
             log = _logger;
-            chatHandler = chatManager;
+            chatHandler = (ChatManager?)chatManager;
         }
 
         public void PopulateTeamA()

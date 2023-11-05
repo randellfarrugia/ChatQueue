@@ -13,9 +13,9 @@ namespace QueueAPI.Controllers
         public ILogger log;
         IConfiguration configuration;
 
-        public QueueController(IConfiguration _configuration, ILogger _logger, ChatManager chatSystem)
+        public QueueController(IConfiguration _configuration, ILogger _logger, IChatManager chatManager)
         {
-            QueueBL = new QueueBL(_configuration, _logger, chatSystem);
+            QueueBL = new QueueBL(_configuration, _logger, chatManager);
             configuration = _configuration;
             log = _logger;
         }

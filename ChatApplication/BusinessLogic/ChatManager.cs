@@ -49,17 +49,7 @@ namespace ChatApplication.BusinessLogic
         {
             var session = chatQueue.FirstOrDefault(x => x.UserId == userId);
             MonitorChatSession(session);
-        }
-
-        public void AddAgent(Agent agent)
-        {
-            agents = AgentUtilities.AddAgent(agents, agent.Name, agent.SeniorityLevel);
-        }
-
-        public void AddOverflowAgent(Agent agent)
-        {
-            overflowTeam = AgentUtilities.AddOverflowTeamMember(overflowTeam, agent.Name);
-        }
+        }       
 
         public void ResetPollStatus(string userId)
         {
@@ -127,18 +117,14 @@ namespace ChatApplication.BusinessLogic
 
         private Agent GetNextAvailableAgent(List<Agent> availableAgents, List<Agent> availableOverflowAgents)
         {
-            var juniorAgents = availableAgents.Where(a => a.SeniorityLevel == "Junior").ToList();
-            var midLevelAgents = availableAgents.Where(a => a.SeniorityLevel == "MidLevel").ToList();
-            var seniorAgents = availableAgents.Where(a => a.SeniorityLevel == "Senior").ToList();
-            var teamLeadAgents = availableAgents.Where(a => a.SeniorityLevel == "TeamLead").ToList();
+            var seniorityLevels = new List<string> { "Junior", "MidLevel", "Senior", "TeamLead" };
 
-            var agentsBySeniority = new List<List<Agent>> { juniorAgents, midLevelAgents, seniorAgents, teamLeadAgents };
-
-            foreach (var agentList in agentsBySeniority)
+            foreach (var seniorityLevel in seniorityLevels)
             {
-                if (agentList.Count > 0)
+                var agentsWithSeniority = availableAgents.Where(a => a.SeniorityLevel == seniorityLevel).ToList();
+                if (agentsWithSeniority.Count > 0)
                 {
-                    return agentList.First();
+                    return agentsWithSeniority.First();
                 }
             }
 
@@ -156,5 +142,17 @@ namespace ChatApplication.BusinessLogic
             int maxQueueLength = (int)(totalCapacity * MaxQueueMultiplier);
             return maxQueueLength;
         }
+
+        #region Add Agents
+        public void AddAgent(Agent agent)
+        {
+            agents = AgentUtilities.AddAgent(agents, agent.Name, agent.SeniorityLevel);
+        }
+
+        public void AddOverflowAgent(Agent agent)
+        {
+            overflowTeam = AgentUtilities.AddOverflowTeamMember(overflowTeam, agent.Name);
+        }
+        #endregion
     }
 }

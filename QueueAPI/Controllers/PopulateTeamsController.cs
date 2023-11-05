@@ -13,9 +13,9 @@ namespace QueueAPI.Controllers
         public ILogger log;
         IConfiguration configuration;
 
-        public PopulateTeamsController(IConfiguration _configuration, ILogger _logger, ChatManager chatSystem)
+        public PopulateTeamsController(IConfiguration _configuration, ILogger _logger, IChatManager chatManager)
         {
-            PopulateTeamsBL = new PopulateTeamsBL(_configuration, _logger, chatSystem);
+            PopulateTeamsBL = new PopulateTeamsBL(_configuration, _logger, chatManager);
             configuration = _configuration;
             log = _logger;
         }
