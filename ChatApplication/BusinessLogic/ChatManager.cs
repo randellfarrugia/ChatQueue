@@ -1,5 +1,6 @@
 ﻿using ChatApplication.Models;
 using ChatApplication.Utilities;
+using Serilog;
 
 namespace ChatApplication.BusinessLogic
 {
@@ -7,6 +8,7 @@ namespace ChatApplication.BusinessLogic
     {
         private const int MaxConcurrentChats = 10;
         private const double MaxQueueMultiplier = 1.5;
+
 
         public List<ChatSession> chatQueue;
         public List<Agent> agents;
@@ -37,6 +39,7 @@ namespace ChatApplication.BusinessLogic
             if (activeChatCount < maxQueueLength)
             {
                 chatQueue.Add(session);
+                Log.Information($"New session created - {sessionId}");
                 return AssignChatToAgent(session);
             }
             else
@@ -49,7 +52,7 @@ namespace ChatApplication.BusinessLogic
         {
             var session = chatQueue.FirstOrDefault(x => x.UserId == userId);
             MonitorChatSession(session);
-        }       
+        }
 
         public void ResetPollStatus(string userId)
         {
@@ -71,6 +74,7 @@ namespace ChatApplication.BusinessLogic
             var stopCheck = false;
             while (!stopCheck)
             {
+                //Will check for poll status every 4 seconds, while client is polling every 1 second
                 Thread.Sleep(4000);
                 var session = chatQueue?.FirstOrDefault(x => x.SessionId == (string)sessionId);
                 if (session != null)
@@ -107,6 +111,7 @@ namespace ChatApplication.BusinessLogic
             var agentToAssign = GetNextAvailableAgent(availableAgents, availableOverflowAgents);
             if (agentToAssign != null)
             {
+                Log.Information($"Agent assigned to session {session.SessionId} - {agentToAssign.Id}. Agent's updated number of chats - {agentToAssign.CurrentChats + 1}");
                 agentToAssign.CurrentChats++;
                 chatQueue.Where(c => c.UserId == session.UserId).ToList().ForEach(x => x.AgentID = agentToAssign.Id);
                 return "OK";
