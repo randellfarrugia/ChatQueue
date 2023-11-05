@@ -14,7 +14,5 @@ namespace ChatApplication.BusinessLogic
         public void AddAgent(Agent agent);
         public void AddOverflowAgent(Agent agent);
         public void ResetPollStatus(string userId);
-
-
     }
 }

@@ -13,9 +13,9 @@ namespace QueueAPI.Controllers
         public ILogger log;
         IConfiguration configuration;
 
-        public QueueController(IConfiguration _configuration, ILogger _logger, IChatManager chatManager)
+        public QueueController(IConfiguration _configuration, IHttpContextAccessor _context, ILogger _logger, IChatManager chatManager)
         {
-            QueueBL = new QueueBL(_configuration, _logger, chatManager);
+            QueueBL = new QueueBL(_configuration, _context, _logger, chatManager);
             configuration = _configuration;
             log = _logger;
         }
@@ -26,6 +26,5 @@ namespace QueueAPI.Controllers
             var result = QueueBL.InsertNewSession(value);
             return result;
         }
-
     }
 }

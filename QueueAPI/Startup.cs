@@ -2,6 +2,7 @@
 using Serilog.Core;
 using ChatApplication.BusinessLogic;
 using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace QueueAPI
 {
@@ -9,6 +10,7 @@ namespace QueueAPI
     {
         public IConfiguration Configuration { get; }
         private Logger log;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public Startup(IConfiguration configuration)
         {
@@ -27,11 +29,11 @@ namespace QueueAPI
 
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Serilog.ILogger>(log);
             services.AddSingleton<IChatManager, ChatManager>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers()
             .AddJsonOptions(options =>
@@ -48,7 +50,6 @@ namespace QueueAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -68,7 +69,6 @@ namespace QueueAPI
             });
 
             app.UseSerilogRequestLogging();
-
         }
     }
 }

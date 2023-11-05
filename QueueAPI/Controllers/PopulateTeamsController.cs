@@ -47,6 +47,5 @@ namespace QueueAPI.Controllers
             PopulateTeamsBL.PopulateOverflowTeam();
             return new ContentResult() { Content = "{\"Result\":\"OK\"}", ContentType = "application/json", StatusCode = 200 };
         }
-
     }
 }

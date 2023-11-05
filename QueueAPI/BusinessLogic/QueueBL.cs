@@ -11,11 +11,13 @@ namespace QueueAPI.BusinessLogic
     {
         public ILogger log;
         public ChatManager chatHandler;
+        IHttpContextAccessor context;
 
-        public QueueBL(IConfiguration configuration, ILogger _logger, IChatManager chatManager)
+        public QueueBL(IConfiguration configuration, IHttpContextAccessor _context, ILogger _logger, IChatManager chatManager)
         {
             log = _logger;
             chatHandler = (ChatManager?)chatManager;
+            context = _context;
         }
 
         public IActionResult InsertNewSession(QueueRequest request)
@@ -29,23 +31,26 @@ namespace QueueAPI.BusinessLogic
             }
 
             chatHandler.StartChat(request.UserId);
-
-            Thread poll = new Thread(
-            o =>
-               {
-                   PollingMethod((string)o);
-               });
-            poll.Start(request.UserId);
+            PollingMethod(request.UserId);
 
             return new ContentResult() { Content = "{\"Result\":\"OK\"}", ContentType = "application/json", StatusCode = 200 };
 
         }
         public void PollingMethod(string userId)
         {
-            while (true)
+            bool? RequestAborted = false;
+            while ((bool)!RequestAborted)
             {
-                Thread.Sleep(10000);
-                chatHandler.ResetPollStatus(userId);
+                RequestAborted = context?.HttpContext?.RequestAborted.IsCancellationRequested;
+                if ((RequestAborted == null) || (RequestAborted == true))
+                {
+                    RequestAborted = true;
+                }
+                else
+                {
+                    Thread.Sleep(10000);
+                    chatHandler.ResetPollStatus(userId);
+                }
             }
 
         }
